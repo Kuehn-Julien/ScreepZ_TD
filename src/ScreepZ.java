@@ -29,6 +29,8 @@ public class ScreepZ extends BasicGame{
     private ArrayList<CoreTower> activeTowers = new ArrayList<>(maxTowers);
     private ArrayList<Integer> mapActivity;
     
+    private TowerType selectedTower = TowerType.GUN;
+    
     public static void main(String[] args){
         try
         {
@@ -79,6 +81,8 @@ public class ScreepZ extends BasicGame{
         
         if(!activeTowers.isEmpty()){
             for(CoreTower tower: activeTowers){
+                tower.reduceCooldown(1);
+                tower.reload();
                 tower.doAction(activeScreeps,activeTowers);
             }
         }
@@ -134,6 +138,27 @@ public class ScreepZ extends BasicGame{
             }
         }
         // ************ //
+        
+        // TOWER BUTTON TEST //
+        graphics.setColor(Color.gray);
+        graphics.fillRect(2*xOffset+(wTiles*tileSize),
+                yOffset, 100, 100);
+        graphics.drawImage(imgHandler.getTowerImg(selectedTower), 2*xOffset+(wTiles*tileSize)+25,yOffset+25);
+        // ***************** //
+        
+        
+        // DRAW Tower-count //
+        graphics.drawString("Tower left: " + (maxTowers - activeTowers.size()), 900,200);
+        
+        /*
+        if(activeTowers.size() == 1){
+            for(CoreScreep screep: activeScreeps){
+                screep.alive = false;
+            }
+            
+            mapActivity.clear();
+        }
+        */
         
         // DRAW Screepz //
         if(!activeScreeps.isEmpty()){
@@ -217,20 +242,29 @@ public class ScreepZ extends BasicGame{
         // Handle click inside the grid
         if(inHandler.clickInGrid(i1,i2,wTiles,hTiles,tileSize,xOffset,yOffset)){
             int[] x = inHandler.getTile(i1,i2,wTiles,hTiles,tileSize,xOffset,yOffset);
-            //if(x[0] != 99 && tileGrid[x[1]][x[0]] != 1 && tileGrid[x[1]][x[0]] != 3 && activeTowers.size() <= maxTowers)
-            addTower(TowerType.GUN,x[0],x[1]);
+            addTower(selectedTower,x[0],x[1]);
         }
-        else{
-            activeScreeps.add(new DankScreep(startX, startY));
+        
+        int x = 2*xOffset+(wTiles*tileSize);
+        if(i1 >= x && i1 <= x+100 && i2 >= yOffset && i2 <= yOffset+100){
+            switch(selectedTower){
+                case GUN: selectedTower = TowerType.SPIKE; break;
+                case SPIKE: selectedTower = TowerType.GUN; break;
+            }
         }
         
     }
     
     private boolean addTower(TowerType type, int posX, int posY){
         
-        if(posX != 99 && tileGrid[posY][posX] != 1 && tileGrid[posY][posX] != 3 && activeTowers.size() <= maxTowers
+        if(posX != 99 && tileGrid[posY][posX] != 1 && tileGrid[posY][posX] != 3 && activeTowers.size() < maxTowers
                 && builGrid[posY][posX] != 10){
-            activeTowers.add(new GunTower(posX, posY));
+            
+            switch(type){
+                case SPIKE: activeTowers.add(new SpikeTower(posX, posY)); break;
+                case GUN: activeTowers.add(new GunTower(posX, posY)); break;
+            }
+            
             builGrid[posY][posX] = 10;
         }
         
@@ -242,7 +276,7 @@ public class ScreepZ extends BasicGame{
     }
     
     public enum TowerType{
-        GUN
+        GUN, SPIKE
     }
     
     public enum GroundType{

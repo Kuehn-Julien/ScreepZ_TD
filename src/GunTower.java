@@ -7,17 +7,18 @@ public class GunTower extends CoreTower {
     public GunTower(int posX, int posY){
         super(posX, posY);
         this.type = ScreepZ.TowerType.GUN;
-        this.damage = 25;
-        this.range = 1;
+        
+        this.damage = 50;
+        this.range = 2;
+        this.maxCooldown = 2;
     }
     
     public void doAction(ArrayList<CoreScreep> screeps, ArrayList<CoreTower> towers) {
         
-        for(int i=0; i<range; i++){
-            for(int j=0; j<range; j++){
-                damageScreepsHorizontal(screeps, j+1);
-            }
-            damageScreepsVertical(screeps, i+1);
+        if(checkCooldown()){
+            damageScreepsHorizontal(screeps);
+            damageScreepsVertical(screeps);
+            increaseCooldown();
         }
         
     }
@@ -25,30 +26,4 @@ public class GunTower extends CoreTower {
     public void useAbility(){
         
     }
-    
-    private void damageScreepsVertical(ArrayList<CoreScreep> screeps, int aY) {
-        if (!screeps.isEmpty()) {
-            for(CoreScreep screep : screeps) {
-                if(screep.posX == posX && screep.posY == posY+aY){
-                    screep.takeDamage(damage);
-                }
-                else if(screep.posX == posX && screep.posY == posY-aY){
-                    screep.takeDamage(damage);
-                }
-            }
-        }
-    }
-    
-    private void damageScreepsHorizontal(ArrayList<CoreScreep> screeps, int aX) {
-        if (!screeps.isEmpty()) {
-            for(CoreScreep screep : screeps) {
-                if (screep.posX == posX + aX && screep.posY == posY) {
-                    screep.takeDamage(damage);
-                } else if (screep.posX == posX - aX && screep.posY == posY) {
-                    screep.takeDamage(damage);
-                }
-            }
-        }
-    }
-    
 }

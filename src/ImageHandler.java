@@ -50,6 +50,7 @@ public class ImageHandler{
     public Image getTowerImg(ScreepZ.TowerType type){
         switch(type){
             case GUN: return images[4];
+            case SPIKE: return images[6];
             default: return null;
         }
     }
