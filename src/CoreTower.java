@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public abstract class CoreTower implements TowerAction {
     
+    // CAN BE CONTEXT OF CHANGE //
     protected int maxCooldown = 1;
     protected int damage = 10;
     protected int range = 1;
