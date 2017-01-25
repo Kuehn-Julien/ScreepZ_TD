@@ -37,6 +37,9 @@ public class ScreepZ extends BasicGame{
             AppGameContainer appgc;
             appgc = new AppGameContainer(new ScreepZ("Test"), 1280, 720, false);
             appgc.setShowFPS(false);
+            appgc.setMaximumLogicUpdateInterval(1000);
+            appgc.setMinimumLogicUpdateInterval(900);
+            appgc.setTargetFrameRate(30);
             appgc.start();
         }
         catch (SlickException ex)
@@ -59,12 +62,13 @@ public class ScreepZ extends BasicGame{
     
     @Override
     public void update(GameContainer gameContainer, int i) throws SlickException {
-        
+        /*
         try {
             Thread.sleep(750);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        */
         
         if(mapActivity != null){
             if(!mapActivity.isEmpty()){
